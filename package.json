@@ -9,7 +9,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint . --max-warnings 0 --report-unused-disable-directives",
-    "format": "prettier -w --plugin-search-dir=. ."
+    "format": "prettier -w --plugin-search-dir=. .",
+    "local": "firebase emulators:start",
+    "deploy": "firebase deploy"
   },
   "dependencies": {
     "@astrojs/node": "8.2.5",

@@ -1,0 +1,116 @@
+#!/usr/bin/env node
+
+import log from "./log.js";
+import { readFileSync, writeFileSync } from "node:fs";
+
+/**
+ * Usage: creds2env INPUT_CREDENTIALS_FILE [OUTPUT_FILE]
+ *
+ * What this script does:
+ * 1. Read credentials file at path specified as the command line argument.
+ * 2. Write credentials transformed to dotenv format to the file specified as the
+ *    second command line argument. If the second argument is omitted, write to
+ *    stdout.
+ *
+ * Example:
+ *
+ *   # Writes transformed credentials to `.env`
+ *   creds2env ~/firebase/credentials.json .env
+ *
+ *   # Writes transformed credentials to stdout
+ *   creds2env ~/firebase/credentials.json
+ *
+ *   # Writes transformed credentials and pipes to `.env` (overwriting file)
+ *   creds2env ~/firebase/credentials.json > .env
+ *
+ *   # Writes transformed credentials and pipes to `.env` (appending to file)
+ *   creds2env ~/firebase/credentials.json >> .env
+ */
+
+const VERSION = "1.0";
+const NAME = "creds2env";
+
+const args = process.argv.slice(2);
+
+function main(args) {
+  switch (getArg(0)) {
+    case "-h":
+    case "--help":
+      printUsageExit();
+      break;
+    case "-v":
+    case "--version":
+      printExit(VERSION);
+      break;
+  }
+
+  const src = getArg(0);
+  const dst = getArg(1);
+
+  let data;
+  if (!src) {
+    data = readFileSync(0, "utf-8");
+  } else {
+    data = readFileSync(src).toString();
+  }
+
+  if (data) {
+    const parsed = JSON.parse(data);
+
+    // dotenv format: https://www.npmjs.com/package/dotenv#what-rules-does-the-parsing-engine-follow
+
+    if (parsed.private_key) {
+      parsed.private_key = `"${parsed.private_key.replace(/\n/g, "\\n")}"`;
+    }
+
+    const props = Object.entries(parsed).map(([key, value]) => `FB_${key.toUpperCase()}=${value}`);
+    const text = props.join("\n");
+
+    if (!src) {
+      process.stdout.write(text);
+    } else {
+      writeFileSync(dst, text);
+    }
+  }
+}
+
+function getArg(index) {
+  return args && args.length > index ? args[index] : null;
+}
+
+function printUsageExit() {
+  const usage =
+`${NAME} ${VERSION}
+  
+Usage:
+    ${NAME} CREDENTIALS_FILE [OUTPUT_FILE]
+
+Options:
+    -h, --help          Print help
+    -v, --version       Print version
+
+Transform a service credentials file to dotenv format.
+
+This is a convenience for environments that have standardized
+on using .env files, can't easily configure environment variables
+or load secrets or files outside of the environment workspace,
+and usually include .env in .gitignore for a git repository
+
+WARNING! This is a convenience, NOT a best practice! Even if .env
+is in .gitignore, are you certain .env is ignored by all other
+ignore files, like .dockerignore, .gcloudignore, and .npmignore?
+
+Having your secrets under your repository is a security risk!
+Caveat Utilitor!`;
+
+  console.log(usage);
+  process.exit();
+}
+
+function printExit(msg) {
+  console.log(msg);
+  process.exit();
+}
+
+
+main(args);

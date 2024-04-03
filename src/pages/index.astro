@@ -13,8 +13,10 @@ if (sessionCookie) {
 }
 
 const name = user ? user.displayName : "Stranger";
+const status = user ? "" : "No session cookie. If you see one in the browser console, then this is a bug!";
 ---
 
 <Layout title="Home">
   <h1>Hello {name}!</h1>
+  <p>{status}</p>
 </Layout>

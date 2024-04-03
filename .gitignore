@@ -1,0 +1,19 @@
+# build output
+.firebase/
+dist/
+
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+*.log*
+
+# environment variables
+.env
+.env.*
+
+# macOS-specific files
+.DS_Store

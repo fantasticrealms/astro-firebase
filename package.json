@@ -1,0 +1,29 @@
+{
+  "name": "astro-firebase-template",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "lint": "eslint . --max-warnings 0 --report-unused-disable-directives",
+    "format": "prettier -w --plugin-search-dir=. ."
+  },
+  "dependencies": {
+    "@astrojs/node": "8.2.5",
+    "astro": "4.5.13",
+    "firebase": "10.10.0",
+    "firebase-admin": "12.0.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "7.5.0",
+    "@typescript-eslint/parser": "7.5.0",
+    "eslint": "^8.42.0",
+    "eslint-plugin-astro": "0.33.1",
+    "firebase-tools": "13.6.1",
+    "prettier": "3.2.5",
+    "prettier-plugin-astro": "0.13.0"
+  }
+}
